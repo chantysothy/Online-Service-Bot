@@ -7,6 +7,9 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Microsoft.Bot.Connector;
 using Newtonsoft.Json;
+using Microsoft.Bot.Builder.Dialogs;
+using OCSBot.KB;
+using OCSBot.Dialogs;
 
 namespace OCSBot
 {
@@ -21,13 +24,28 @@ namespace OCSBot
         {
             if (activity.Type == ActivityTypes.Message)
             {
-                ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                // calculate something for us to return
-                int length = (activity.Text ?? string.Empty).Length;
+                //search for KB, then send to Luis
+                //var kbResult = KBSearch.Search(activity.Text);
+                //if (kbResult != null && kbResult.Count() > 0)
+                //{
+                //    var result = kbResult.First();
+                //    ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
 
-                // return our reply to the user
-                Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
-                await connector.Conversations.ReplyToActivityAsync(reply);
+                //    var reply = activity.CreateReply(result.content);
+                //    await connector.Conversations.ReplyToActivityAsync(reply);
+
+                //}
+                //else
+                try 
+                {
+                    await Conversation.SendAsync(activity, () => new LuisDialogBox());
+                }
+                catch (Exception exp)
+                {
+                    var reply = activity.CreateReply($"Error:{exp.Message}");
+                    ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                    await connector.Conversations.ReplyToActivityAsync(reply);
+                }
             }
             else
             {

@@ -5,6 +5,16 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OCSBot", "OCSBot\OCSBot.csproj", "{A8BA1066-5695-4D71-ABB4-65E5A5E0C3D4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AzureSearchImport", "AzureSearchImport", "{A24917E2-30EA-46A4-9D21-B2DFE1A0D234}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureSearchImport", "AzureSearchImport\AzureSearchImport\AzureSearchImport.csproj", "{912915F1-AD80-4EB7-A664-BC4F3801521C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgentBot", "AgentBot\AgentBot.csproj", "{96A1744F-08F8-433F-AB5B-EA69A7527BBD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AgentAuthenticationWeb", "AgentAuthenticationWeb", "{A580A4D4-7A78-4302-A2C8-932C09E3831A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgentLoginWeb", "Websites\AgentLoginWeb\AgentLoginWeb.csproj", "{3A56E90E-3088-4441-858B-E1862CD2D83C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,8 +25,24 @@ Global
 		{A8BA1066-5695-4D71-ABB4-65E5A5E0C3D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8BA1066-5695-4D71-ABB4-65E5A5E0C3D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8BA1066-5695-4D71-ABB4-65E5A5E0C3D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{912915F1-AD80-4EB7-A664-BC4F3801521C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{912915F1-AD80-4EB7-A664-BC4F3801521C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{912915F1-AD80-4EB7-A664-BC4F3801521C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{912915F1-AD80-4EB7-A664-BC4F3801521C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96A1744F-08F8-433F-AB5B-EA69A7527BBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96A1744F-08F8-433F-AB5B-EA69A7527BBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96A1744F-08F8-433F-AB5B-EA69A7527BBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96A1744F-08F8-433F-AB5B-EA69A7527BBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A56E90E-3088-4441-858B-E1862CD2D83C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A56E90E-3088-4441-858B-E1862CD2D83C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A56E90E-3088-4441-858B-E1862CD2D83C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A56E90E-3088-4441-858B-E1862CD2D83C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{912915F1-AD80-4EB7-A664-BC4F3801521C} = {A24917E2-30EA-46A4-9D21-B2DFE1A0D234}
+		{3A56E90E-3088-4441-858B-E1862CD2D83C} = {A580A4D4-7A78-4302-A2C8-932C09E3831A}
 	EndGlobalSection
 EndGlobal
