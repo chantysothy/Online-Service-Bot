@@ -5,6 +5,8 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.DirectLine;
 using OCSBot.KB;
 using OCSBot.Localizations;
+using OCSBot.Shared;
+using OCSBot.Shared.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,40 +17,59 @@ namespace OCSBot.Dialogs
 {   
     public partial class LuisDialogBox:LuisDialog<string>
     {
-        public async Task HumanProcess(IDialogContext context, LuisResult result)
+        public async Task<bool> HumanProcess(IDialogContext context, LuisResult result)
         {
-            var resp = await PostToBotAsync(new Microsoft.Bot.Connector.DirectLine.Activity()
+            var statusDB = Configuration.ConfigurationHelper.GetString("BotStatusDBConnectionString");
+            var db = new AgentStatusStorage(statusDB);
+            var agents = await db.FindAvailableAgentsAsync();
+            var agent = agents.FirstOrDefault();
+            if (agent != null)
             {
-                Type = Microsoft.Bot.Connector.DirectLine.ActivityTypes.Message,
-                From = new Microsoft.Bot.Connector.DirectLine.ChannelAccount(context.Activity.Recipient.Id, context.Activity.Recipient.Name),
-                Recipient = new Microsoft.Bot.Connector.DirectLine.ChannelAccount("default-user", "User"),
-                ChannelId = "7kfikk9l7h182ke3i",
-                Text = context.Activity.AsMessageActivity().Text
-            });
-            var connector = new ConnectorClient(new Uri(context.Activity.ServiceUrl));
-            connector.Conversations.ReplyToActivity(context.Activity.Conversation.Id,
-                                                        context.Activity.Id,
-                                                        new Microsoft.Bot.Connector.Activity
-                                                        {
-                                                            Type = Microsoft.Bot.Connector.DirectLine.ActivityTypes.Message,
-                                                            Text = resp.Text,
-                                                            From = context.Activity.Recipient,
-                                                            Recipient = context.Activity.From,
-                                                            ChannelId = context.Activity.ChannelId
-                                                        });
-            
-            //ConnectorClient connector = new ConnectorClient(new Uri(context.Activity.ServiceUrl));
-            //StateClient sc = ((Microsoft.Bot.Connector.DirectLine.Activity)context.Activity).GetStateClient();
+                //from bot to agent
+                var resp = await PostToAgentBotAsync(new Microsoft.Bot.Connector.DirectLine.Activity()
+                {
+                    Type = Microsoft.Bot.Connector.DirectLine.ActivityTypes.Message,
+                    //From = new Microsoft.Bot.Connector.DirectLine.ChannelAccount(context.Activity.Recipient.Id, context.Activity.Recipient.Name),
+                    From = new Microsoft.Bot.Connector.DirectLine.ChannelAccount(id: agent.BotIdInChannel),
+                    Recipient = new Microsoft.Bot.Connector.DirectLine.ChannelAccount(id: agent.AgentIdInChannel),
+                    ChannelId = agent.ChannelId,
+                    Text = context.Activity.AsMessageActivity().Text
+                });
 
-            //connector.Conversations.CreateDirectConversation(context.Activity.Recipient, new Microsoft.Bot.Connector.DirectLine.ChannelAccount());
-            //BotData data = await sc.BotState.GetUserDataAsync(context.Activity.ChannelId, context.Activity.From.Id);
-            //data.SetProperty("Authenticated", true);
-            //data.SetProperty("IsAgent", true);
+                var connector = new ConnectorClient(new Uri(context.Activity.ServiceUrl));
+                connector.Conversations.ReplyToActivity(context.Activity.Conversation.Id,
+                                                            context.Activity.Id,
+                                                            new Microsoft.Bot.Connector.Activity
+                                                            {
+                                                                Type = Microsoft.Bot.Connector.DirectLine.ActivityTypes.Message,
+                                                                Text = resp.Text,
+                                                                From = context.Activity.Recipient,
+                                                                Recipient = context.Activity.From,
+                                                                ChannelId = context.Activity.ChannelId
+                                                            });
+
+                return true;
+            }
+            else
+            {
+                var connector = new ConnectorClient(new Uri(context.Activity.ServiceUrl));
+                connector.Conversations.ReplyToActivity(context.Activity.Conversation.Id,
+                                                            context.Activity.Id,
+                                                            new Microsoft.Bot.Connector.Activity
+                                                            {
+                                                                Type = Microsoft.Bot.Connector.DirectLine.ActivityTypes.Message,
+                                                                Text = Messages.BOT_NO_AGENTS_AVAILABLE,
+                                                                From = context.Activity.Recipient,
+                                                                Recipient = context.Activity.From,
+                                                                ChannelId = context.Activity.ChannelId
+                                                            });
+                return false;
+            }
 
         }
         private string _agentConversationId = null;
         private string _agentConversationWatermark = null;
-        private async Task<Microsoft.Bot.Connector.DirectLine.Activity> PostToBotAsync(Microsoft.Bot.Connector.DirectLine.Activity activityFromUser)
+        private async Task<Microsoft.Bot.Connector.DirectLine.Activity> PostToAgentBotAsync(Microsoft.Bot.Connector.DirectLine.Activity activityFromUser)
         {
             var directLineSecret = Configuration.ConfigurationHelper.GetString("AgentBot_DirectLine_Secret");
             var dc = new DirectLineClient(directLineSecret, null);
@@ -64,15 +85,17 @@ namespace OCSBot.Dialogs
                 var toAgent = new Microsoft.Bot.Connector.DirectLine.Activity
                 {
                     Text = activityFromUser.Text,
-                    From = activityFromUser.Recipient,
-                    Recipient = new Microsoft.Bot.Connector.DirectLine.ChannelAccount()
+                    From = activityFromUser.From,
+                    Recipient = activityFromUser.Recipient
                 };
+                //var conversation = dc.Conversations.ReconnectToConversation(_agentConversationId);
+                var conversation = dc.Conversations.StartConversation();
                 var resp = await dc.Conversations.PostActivityAsync(
-                    _agentConversationId,
-                    toAgent);
+                                conversation.ConversationId,
+                                toAgent);
 
                 var activitySet = await dc.Conversations.GetActivitiesAsync(_agentConversationId, _agentConversationWatermark);
-                _agentConversationId = activitySet.Watermark;
+                //_agentConversationId = activitySet.Watermark;
 
                 return activitySet.Activities.Last();
             }

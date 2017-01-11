@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AgentAuthenticationWeb", "A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgentLoginWeb", "Websites\AgentLoginWeb\AgentLoginWeb.csproj", "{3A56E90E-3088-4441-858B-E1862CD2D83C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OCSBotShared", "OCSBotShared\OCSBotShared.csproj", "{EF132FAA-7776-43F3-8CA3-14D52E33D457}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{3A56E90E-3088-4441-858B-E1862CD2D83C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A56E90E-3088-4441-858B-E1862CD2D83C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A56E90E-3088-4441-858B-E1862CD2D83C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF132FAA-7776-43F3-8CA3-14D52E33D457}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF132FAA-7776-43F3-8CA3-14D52E33D457}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF132FAA-7776-43F3-8CA3-14D52E33D457}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF132FAA-7776-43F3-8CA3-14D52E33D457}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

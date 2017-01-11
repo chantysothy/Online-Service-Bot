@@ -123,6 +123,9 @@
   <data name="BOT_CREATE_TICKET" xml:space="preserve">
     <value>我幫你聯絡客服人員, 他們會連絡您喔~</value>
   </data>
+  <data name="BOT_NO_AGENTS_AVAILABLE" xml:space="preserve">
+    <value>目前所有客服人員都在忙線中，已經為您建立一個支援請求。</value>
+  </data>
   <data name="BOT_NO_ANSWERS" xml:space="preserve">
     <value>你問倒我了...我還沒學到這個...</value>
   </data>

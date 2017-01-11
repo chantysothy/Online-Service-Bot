@@ -47,6 +47,7 @@ namespace OCSBot.Dialogs
                     break;
                 case "信箱掛件數量":
                     //電腦局號（6碼）,信箱種類,信箱號碼,身分別,識別碼 (FormDialog)
+                    context.Wait(ResumeAfterInformationInput);
                     break;
             }
         }

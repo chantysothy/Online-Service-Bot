@@ -46,7 +46,7 @@ namespace OCSBot.Dialogs
                 answer = Messages.BOT_CREATE_TICKET;
                 await context.PostAsync(answer);
 
-                //await HumanProcess(context, result);
+                await HumanProcess(context, result);
             }
         }
     }

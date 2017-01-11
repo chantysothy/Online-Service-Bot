@@ -79,6 +79,15 @@ namespace OCSBot.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 目前所有客服人員都在忙線中，已經為您建立一個支援請求。.
+        /// </summary>
+        internal static string BOT_NO_AGENTS_AVAILABLE {
+            get {
+                return ResourceManager.GetString("BOT_NO_AGENTS_AVAILABLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 你問倒我了...我還沒學到這個....
         /// </summary>
         internal static string BOT_NO_ANSWERS {
