@@ -11,6 +11,9 @@ using AgentBot.Localizations;
 using System.Collections.Generic;
 using Microsoft.Bot.Builder.Dialogs;
 using AgentBot.Configuration;
+using OCSBot.Shared;
+using OCSBot.Shared.Models;
+using Newtonsoft.Json.Linq;
 
 namespace AgentBot
 {
@@ -23,48 +26,94 @@ namespace AgentBot
         /// </summary>
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {
+            Logger.Info($"message received : type is {activity.Type}");
             try
             {
                 if (activity.Type == ActivityTypes.Message)
                 {
-                    var userData = activity.GetStateClient().BotState.GetUserData(activity.ChannelId, activity.From.Id);
-                    bool authenticated = false;
-                    try
-                    {
-                        authenticated = userData.GetProperty<bool>("Agent:Authenticated");
-                    }
-                    catch (Exception exp)
-                    {
+                    Logger.Info($"message received from {activity.From.Name} : {JsonConvert.SerializeObject(activity)}");
+                    Logger.Info($"message received to {activity.Recipient.Name}/{activity.Recipient.Id}");
+                    await Conversation.SendAsync(activity, () => new Dialogs.AgentDialog());
+                    //if (activity.From.Name.EndsWith("@ocsuser"))
+                    //{
+                    //    AgentStatus agent = null;
+                    //    JObject o = (JObject)activity.ChannelData;
+                    //    var os = JsonConvert.SerializeObject(o);
+                    //    DirectLineChannelData channelData = JsonConvert.DeserializeObject<DirectLineChannelData>(os);
+                    //    //dynamic channelData = activity.ChannelData;
+                    //    Logger.Info($"ChannelData = {channelData}");
+                    //    ConversationStatus conversation = null;
+                    //    if (channelData.RoundTrip == 0)
+                    //    {
+                    //        Logger.Info($"RoundTrip = {channelData.RoundTrip}");
+                    //        //first message send to agent, find an available agent
+                    //        agent = (await storage.FindAvailableAgentsAsync()).FirstOrDefault();
+                    //        conversation = (await storage.QueryConversationStatusAsync(c => c.AgentID == agent.Id)).FirstOrDefault();
+                    //        Logger.Info($"conversation = {conversation}");
 
-                    }
-                    if (!authenticated)
-                    {
-                        var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                        await connector.Conversations.ReplyToActivityAsync(activity.CreateReply($"Authenticated = {authenticated}"));
-                        RequestLogin(activity);
-                    }
-                    else if (activity.Text.ToLower().Trim() == "logout")
-                    {
-                        userData.SetProperty<bool>("Agent:Authenticated", false);
-                        var state = activity.GetStateClient().BotState;
-                        state.SetUserData(activity.ChannelId, activity.From.Id, userData);
-                        var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                        await connector.Conversations.ReplyToActivityAsync(activity.CreateReply("you've logged out"));
-                    }
-                    else
-                    {
-                        //var reply = activity.CreateReply("you've logged in");
-                        //ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                        //var resp = await connector.Conversations.SendToConversationAsync(reply);
-                        await Conversation.SendAsync(activity, () => new Dialogs.AgentDialog());
-                    }
+                    //        conversation.OCSDirectlineConversationId = channelData.ConversationId;
+                    //    }
+                    //    else
+                    //    {
+                    //        //continous messages, find previous agent
+                    //        var previousConversation = (await storage.QueryConversationStatusAsync(c => c.OCSDirectlineConversationId == channelData.ConversationId)).SingleOrDefault();
+                    //        Logger.Info($"previousConversation = {previousConversation}");
+
+                    //        agent = (await storage.FindAvailableAgentsAsync(a => previousConversation.AgentID == a.AgentIdInChannel)).SingleOrDefault();
+                    //        Logger.Info($"agent = {agent}");
+
+                    //        conversation.OCSDirectlineConversationId = channelData.ConversationId;
+                    //    }
+                    //    Logger.Info($"agent:{agent}");
+                    //    if (!agent.IsLoggedIn || agent.IsOccupied)
+                    //    {
+                    //        //Agent somehow is occupied (logout?)
+                    //        Logger.Info("Agent is occupied");
+                    //        var reply = activity.CreateReply($"Agent is occupied");
+                    //        ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                    //        await connector.Conversations.ReplyToActivityAsync(reply);
+                    //    }
+                    //    else
+                    //    {
+                    //        //Agnet is available to answer questions, send message to agent
+                    //        Logger.Info("Sending to conversation...");
+                    //        if (channelData.RoundTrip == 0)
+                    //        {
+                    //            //first message sent to agent
+                    //            conversation = (await storage.QueryConversationStatusAsync(agent.Id))
+                    //                                        .Where(c => c.OCSDirectlineConversationId == channelData.ConversationId)
+                    //                                        .SingleOrDefault();
+
+                    //        }
+                    //        //First retrieve last conversaion if exists
+                    //        Logger.Info("AgentBot::Sending to agent...");
+
+                    //        var connector = new ConnectorClient(new Uri(agent.ServiceURL),
+                    //                                ConfigurationHelper.GetString("MicrosoftAppId"),
+                    //                                ConfigurationHelper.GetString("MicrosoftAppPassword"));
+                    //        var resp = connector
+                    //                            .Conversations
+                    //                            .SendToConversation(activity, agent.ConversationId);
+
+
+
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    await Conversation.SendAsync(activity, () => new Dialogs.AgentDialog());
+                    //}
                 }
                 else
                 {
                     HandleSystemMessage(activity);
                 }
-            }catch(Exception exp)
+            }
+            catch (Exception exp)
             {
+                Logger.Info($"Exception:{exp.Message}");
+                Logger.Info($"Stack trace:{exp.StackTrace}");
+
                 var reply = activity.CreateReply($"Error:{exp.Message} - {exp.StackTrace}");
                 ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
                 await connector.Conversations.ReplyToActivityAsync(reply);

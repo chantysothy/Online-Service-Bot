@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace OCSBot.Shared.Model
+namespace OCSBot.Shared.Models
 {
     [Serializable]
     public class AgentStatus:TableEntity
@@ -45,5 +45,6 @@ namespace OCSBot.Shared.Model
         public string Name { get; set; }
         public string ConversationId { get; set; }
         public bool IsLoggedIn { get; set; }
+        public string ServiceURL { get; set; }
     }
 }

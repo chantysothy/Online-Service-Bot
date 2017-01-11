@@ -2,6 +2,8 @@
 using AgentBot.Localizations;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
+using Microsoft.Bot.Connector.DirectLine;
+using OCSBot.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,20 +13,23 @@ using System.Web;
 namespace AgentBot.Dialogs
 {
     [Serializable]
-    public class AgentDialog : IDialog<object>
+    public partial class AgentDialog : IDialog<object>
     {
         private ResumptionCookie resumptionCookie = null;
-        public async Task StartAsync(IDialogContext context)
+
+        private void PostToOCSUser(string agentId,string text)
         {
-            context.Wait(MessageReceivedAsync);
+            //DirectLineClient dc = new DirectLineClient()
         }
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> item)
         {
+            Logger.Info("message received async");
             var activity = await item;
-            resumptionCookie = new ResumptionCookie(activity);
             bool authenticated = false;
-            
-            var userData = ((Activity)activity).GetStateClient().BotState.GetUserData(activity.ChannelId, activity.From.Id);
+
+            var userData = ((Activity)activity).GetStateClient()
+                            .BotState
+                            .GetUserData(activity.ChannelId, activity.From.Id);
             try
             {
                 authenticated = userData.GetProperty<bool>("Agent:Authenticated");
@@ -34,54 +39,86 @@ namespace AgentBot.Dialogs
             {
 
             }
-            if (!authenticated)
+            if (activity.From.Name.EndsWith("@ocsuser"))
             {
-                //RequestLogin((Activity)activity);
-                await context.PostAsync("oops");
-                context.Done("");
+                //message from user, send to agent
+                Logger.Info($"message sent into AgentDialog...");
+                await DispatchAsync(context, item);
             }
             else
             {
-                //Direct Line API ?
-                await context.PostAsync("you've logged in");
-                context.Done("");
-            }
+                //message from agent
+                if (activity.Text.ToLower().Trim() == "login")
+                {
+                    RequestLogin((Activity)activity);
+                    resumptionCookie = new ResumptionCookie(activity);
 
+                    Logger.Info($"ResumptionCookie set!");
+                }
+                else if (activity.Text.ToLower().Trim() == "logout")
+                {
+                    authenticated = false;
+                    userData.SetProperty<bool>("Agent:Authenticated", false);
+
+                    ((Activity)activity).GetStateClient()
+                        .BotState
+                        .SetUserData(activity.ChannelId, activity.From.Id, userData);
+
+                    var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                    await connector.Conversations.ReplyToActivityAsync(((Activity)activity).CreateReply("you've logged out"));
+                }
+                else if (!authenticated)
+                {
+                    RequestLogin((Activity)activity);
+                    context.Wait(DispatchAsync);
+                    //context.Done("");
+                }
+                else
+                {
+                    //send to OCS user
+                    await context.PostAsync($"[logged in]{activity.Text}");
+                    PostToOCSUser(activity.From.Id, activity.Text);
+                    context.Wait(DispatchAsync);
+                    //context.Done("");
+                }
+            }
         }
+
         private void RequestLogin(Activity message)
         {
-            BotData data = null;
-            StateClient sc = message.GetStateClient();
-            try
-            {
-                data = sc.BotState.GetUserData(message.ChannelId, message.From.Id);
-                data.SetProperty<bool>("Authenticated", false);
-            }
-            catch (Exception exp)
-            {
+            var resumptionCookie = new ResumptionCookie(message);
+            var encodedResumptionCookie = UrlToken.Encode<ResumptionCookie>(resumptionCookie);
+            Activity oriMessage = resumptionCookie.GetMessage();
 
-            }
-            //Ask agnet to sign-in
-            var reply = message.CreateReply(Messages.BOT_PLEASE_LOGIN);
-            reply.Recipient = message.From;
-            reply.Type = "message";
+
+            var reply = oriMessage.CreateReply(Messages.BOT_PLEASE_LOGIN);
+            reply.Recipient = oriMessage.From;
+            reply.Type = ActivityTypes.Message;
             reply.Attachments = new List<Attachment>();
             List<CardAction> cardButtons = new List<CardAction>();
-            var resumptionCookie = new ResumptionCookie(message);
             var encodedCookie = UrlToken.Encode(resumptionCookie);
-            //string encodedResumptionCookie = UrlToken.Encode(this.resumptionCookie);
             CardAction button = new CardAction()
             {
                 Value = $"{ConfigurationHelper.GetString("AgentLogin_URL")}?cookie={encodedCookie}",
                 Type = "signin",
-                Title = "Connect"
+                Title = $"Authentication Required"
             };
             cardButtons.Add(button);
-            SigninCard plCard = new SigninCard(text: Messages.BOT_PLEASE_LOGIN, buttons: cardButtons);
+            SigninCard plCard = new SigninCard(
+                text: $"{Messages.BOT_PLEASE_LOGIN} - {message.From.Id}/{message.From.Name}/{message.Conversation.Id}",
+                buttons: cardButtons);
             Attachment plAttachment = plCard.ToAttachment();
             reply.Attachments.Add(plAttachment);
             ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
+            //Conversation.ResumeAsync(resumptionCookie, reply).Wait();
             var response = connector.Conversations.SendToConversation(reply);
+        }
+
+        public async Task StartAsync(IDialogContext context)
+        {
+            Logger.Info("StartAsync");
+            //context.Wait(MessageReceivedAsync);
+            context.Wait(DispatchAsync);
         }
     }
 }

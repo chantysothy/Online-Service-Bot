@@ -68,8 +68,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logger.cs" />
     <Compile Include="Models\AgentStatus.cs" />
     <Compile Include="AgentStatusStorage.cs" />
+    <Compile Include="Models\ConversationStatus.cs" />
+    <Compile Include="Models\DirectLineChannelData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

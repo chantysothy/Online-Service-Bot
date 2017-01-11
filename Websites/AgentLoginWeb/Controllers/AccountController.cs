@@ -80,9 +80,6 @@ namespace AgentLoginWeb.Controllers
                 return View(model);
             }
 #if true
-            //Michael - demo - do not check id/password
-            var userId = "agent1";
-            FormsAuthentication.SetAuthCookie(userId, true);
             //Send message to Agent
             string resumption = Request.UrlReferrer.Query.Split('=')[1];
             ResumptionCookie resumptionCookie = null;
@@ -94,6 +91,10 @@ namespace AgentLoginWeb.Controllers
                 appId: appId,
                 password: appPassword);
             Activity activity = (Activity)resumptionCookie.GetMessage();
+            var userId = activity.From.Id;
+            //Michael - demo - do not check id/password
+            FormsAuthentication.SetAuthCookie(userId, true);
+
             StateClient sc = activity.GetStateClient(agentBotCredentail);
             BotData data = await sc.BotState.GetUserDataAsync(activity.ChannelId, activity.From.Id);
             data.SetProperty("Agent:Authenticated", true);
@@ -111,7 +112,13 @@ namespace AgentLoginWeb.Controllers
             OCSBot.Shared.AgentStatusStorage storage = new OCSBot.Shared.AgentStatusStorage(
                 Configuration.ConfigurationHelper.GetString("BotStatusDBConnectionString"));
 
-            await storage.UpdateAgentSigninStatusAsync(new OCSBot.Shared.Model.AgentStatus()
+            await storage.UpdateConversationStatusAsync(new OCSBot.Shared.Models.ConversationStatus
+            {
+                AgentID = userId,
+                ConversationId = activity.Conversation.Id,
+                AgentResumptionCookie = resumption
+            });
+            await storage.UpdateAgentStatusAsync(new OCSBot.Shared.Models.AgentStatus()
             {
                 Id = userId,
                 IsLoggedIn = true,
@@ -126,7 +133,8 @@ namespace AgentLoginWeb.Controllers
                 AgentNameInChannel = activity.From.Name,
                 ChannelId = activity.ChannelId,
                 BotIdInChannel = activity.Recipient.Id,
-                BotNameInChannel = activity.Recipient.Name
+                BotNameInChannel = activity.Recipient.Name,
+                ServiceURL = activity.ServiceUrl
             });
             //Conversation.ResumeAsync(resumptionCookie, activity).Wait(5000, System.Threading.CancellationToken.None);
             //replyActivity.From = new ChannelAccount(activity.Recipient.Id,activity.Recipient.Name);
