@@ -20,14 +20,14 @@ namespace OCSBot.Dialogs
     {
         private void SetHumanInvestigating(bool isHumanInvestigating, string endUserId, string endUserName)
         {
-            IsHumanInvestigating = isHumanInvestigating;
-            if (IsHumanInvestigating)
-                EndUser = new Dictionary<string, string> { { "Id", endUserId }, { "Name", endUserName } };//context.Activity.From;
-            else
-                EndUser = null;
+            //IsHumanInvestigating = isHumanInvestigating;
+            //if (IsHumanInvestigating)
+            //    EndUser = new Dictionary<string, string> { { "Id", endUserId }, { "Name", endUserName } };//context.Activity.From;
+            //else
+            //    EndUser = null;
         }
         public Dictionary<string,string> EndUser { get; set; }
-        public bool IsHumanInvestigating { get; set; } = false;
+        public bool _IsHumanInvestigating { get; set; } = false;
         async Task ResumeAfterHumanProcess(IDialogContext context, IAwaitable<string> item)
         {
             var result = await item;
@@ -38,83 +38,8 @@ namespace OCSBot.Dialogs
             //Forward messages to HumanDialog so that every messages coming from end-user goes directly to Agent
             //And we don't have to do much about maintaining conversation states.
             await context.Forward(new HumanInteractionDialog(), ResumeAfterHumanProcess, result.Query, new System.Threading.CancellationToken());
-            //await Microsoft.Bot.Builder.Dialogs.Conversation.SendAsync(
-            //    (Microsoft.Bot.Connector.Activity)context.Activity, 
-            //    () => new HumanInteractionDialog());
 
             return true;
-
-            var statusDB = Configuration.ConfigurationHelper.GetString("BotStatusDBConnectionString");
-            var db = new AgentStatusStorage(statusDB);
-            var agents = await db.FindAvailableAgentsAsync();
-            var agent = agents.FirstOrDefault();
-
-            Logger.Info($"Human Investigating:{IsHumanInvestigating}");
-
-            if (agent != null)
-            {
-                //from bot to agent
-                //find agent's conversation record
-                var agentConversation = (await db.FindMyConversationActivityAsync(agent.Id)).FirstOrDefault();
-                var localConversation = (await db.FindMyConversationActivityAsync(context.Activity.From.Id)).FirstOrDefault();
-                ResumptionCookie cookie = new ResumptionCookie((Microsoft.Bot.Connector.IMessageActivity)context.Activity);
-                if (localConversation == null)
-                {
-                    localConversation = new ConversationRecord();
-                }
-                localConversation.UserID = context.Activity.From.Id;
-                localConversation.LocalBotId = context.Activity.Recipient.Id;
-                localConversation.LocalChannelID = context.Activity.ChannelId;
-                localConversation.LocalConversationID = context.Activity.Conversation.Id;
-                localConversation.LocalActivity = UrlToken.Encode<ResumptionCookie>(cookie);
-                    
-                var resp2 = await PostToAgentBotAsync(new Microsoft.Bot.Connector.DirectLine.Activity()
-                {
-                    Type = Microsoft.Bot.Connector.DirectLine.ActivityTypes.Message,
-                    From = new Microsoft.Bot.Connector.DirectLine.ChannelAccount(
-                                                id: agentConversation.LocalBotId,
-                                                name:context.Activity.From.Name
-                                            ),
-                    Recipient = new Microsoft.Bot.Connector.DirectLine.ChannelAccount(
-                                                id: agentConversation.UserID),
-                    ChannelId = agent.ChannelId,
-                    Text = $"{context.Activity.AsMessageActivity().Text}"
-                });
-                await db.UpdateConversationActivityAsync(localConversation);
-
-                //from bot to agent
-                //var resp = await PostToAgentBotAsync(new Microsoft.Bot.Connector.DirectLine.Activity()
-                //{
-                //    Type = Microsoft.Bot.Connector.DirectLine.ActivityTypes.Message,
-                //    //From = new Microsoft.Bot.Connector.DirectLine.ChannelAccount(context.Activity.Recipient.Id, context.Activity.Recipient.Name),
-                //    From = new Microsoft.Bot.Connector.DirectLine.ChannelAccount(id: agent.BotIdInChannel),
-                //    Recipient = new Microsoft.Bot.Connector.DirectLine.ChannelAccount(id: agent.AgentIdInChannel),
-                //    ChannelId = agent.ChannelId,
-                //    Text = context.Activity.AsMessageActivity().Text
-                //});
-
-                SetHumanInvestigating(true, context.Activity.From.Id, context.Activity.From.Name);
-
-                return true;
-                
-            }
-            else
-            {
-                var connector = new ConnectorClient(new Uri(context.Activity.ServiceUrl));
-                connector.Conversations.ReplyToActivity(context.Activity.Conversation.Id,
-                                                            context.Activity.Id,
-                                                            new Microsoft.Bot.Connector.Activity
-                                                            {
-                                                                Type = Microsoft.Bot.Connector.DirectLine.ActivityTypes.Message,
-                                                                Text = Messages.BOT_NO_AGENTS_AVAILABLE,
-                                                                From = context.Activity.Recipient,
-                                                                Recipient = context.Activity.From,
-                                                                ChannelId = context.Activity.ChannelId
-                                                            });
-                SetHumanInvestigating(false, null, null);
-                return false;
-            }
-
         }
         private string _agentConversationId = null;
         private string _agentConversationWatermark = null;

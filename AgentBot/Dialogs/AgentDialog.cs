@@ -3,6 +3,7 @@ using AgentBot.Localizations;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.DirectLine;
+using Newtonsoft.Json;
 using OCSBot.Shared;
 using System;
 using System.Collections.Generic;
@@ -77,6 +78,10 @@ namespace AgentBot.Dialogs
                     var agent = await storage.QueryAgentStatusAsync(activity.From.Id);
 
                     var convRecord = (await storage.FindMyConversationActivityAsync(agent.Id)).FirstOrDefault();
+
+
+
+
                     var remoteCookie = UrlToken.Decode<ResumptionCookie>(convRecord.RemoteActivity);
                     var remoteActivity = remoteCookie.GetMessage();
                     var remoteConnector = new ConnectorClient(
@@ -87,9 +92,12 @@ namespace AgentBot.Dialogs
                                                             ),
                                                 addJwtTokenRefresher:true
                                                 );
-                    Logger.Info("remoteConnector created");
+                    Logger.Info($"remoteActivity={JsonConvert.SerializeObject(remoteActivity)}");
                     var reply = remoteActivity.CreateReply(activity.Text.Replace("reply:", ""));
-                    Logger.Info($"reply created:{reply}");
+                    remoteConnector.Conversations.SendToConversation(reply);
+
+                    //reply.From.Name += activity.From.Name + "@agent";
+                    Logger.Info($"reply created:{JsonConvert.SerializeObject(reply)}");
                     remoteConnector.Conversations.ReplyToActivity(reply);
                     Logger.Info($"replied");
                 }

@@ -46,9 +46,9 @@ namespace AgentBot.Dialogs
                 agent = (await storage.FindAvailableAgentsAsync()).FirstOrDefault();
                 var convRecord = (await storage.FindConversationActivityAsync(a => a.UserID == agent.Id)).FirstOrDefault();
                 convRecord.RemoteConversationID = channelData.ConversationId;
-                convRecord.RemoteBotId = activity.From.Id;//remote directline bot Id
+                convRecord.RemoteBotId = activity.From.Id;//remote user id actually...
                 convRecord.RemoteActivity = UrlToken.Encode<ResumptionCookie>(
-                                                new ResumptionCookie((Activity)context.Activity));
+                                                new ResumptionCookie((Activity)activity));
                 await storage.UpdateConversationActivityAsync(convRecord);
 
                 Logger.Info($"agent:{agent}");
@@ -76,13 +76,15 @@ namespace AgentBot.Dialogs
                     var localActivity = localResumptionCookie.GetMessage();
                     var localReply = localActivity.CreateReply($"[{activity.From.Name}]{activity.Text}");
                     var localConnector = new ConnectorClient(new Uri(localActivity.ServiceUrl),
-                                new MicrosoftAppCredentials(
-                                    ConfigurationHelper.GetString("MicrosoftAppId"),
-                                    ConfigurationHelper.GetString("MicrosoftAppPassword")),
-                                true);
+                                                                new MicrosoftAppCredentials(
+                                                                    ConfigurationHelper.GetString("MicrosoftAppId"),
+                                                                    ConfigurationHelper.GetString("MicrosoftAppPassword")),
+                                                                true);
                     Microsoft.Bot.Connector.Conversations localConversation = new Microsoft.Bot.Connector.Conversations(localConnector);
                     localConversation.ReplyToActivity(localReply);
                     Logger.Info("done");
+
+                    
                     return;
 
                 }

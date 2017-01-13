@@ -26,44 +26,50 @@ namespace OCSBot.Dialogs
             //whenever receives messages from the user, set resumptionCookie
             IMessageActivity activity = await item;
             resumptionCookie = new ResumptionCookie(activity);
-            if (!IsHumanInvestigating)
-            {
-                Logger.Info("OCSBot::IsHumanInvestigating is false");
-                await base.MessageReceived(context, item);
-            }
-            else
-            {
-                var msg = (Activity)context.Activity;
 
-                Logger.Info("OCSBot::IsHumanInvestigating is true");
-                Logger.Info("msg.From.Id != EndUser[Id]" + (msg.From.Id != EndUser["Id"]).ToString());
-                if (msg.Text == "#close#")
-                {
-                    //agent close case
-                    SetHumanInvestigating(false, null, null);
-                    context.Done("");
-                }
-                else if(msg.From.Id != EndUser["Id"])
-                {
-                    //agent reply
-                    var reply = msg.CreateReply(msg.Text);
-                    await context.PostAsync(new Activity
-                    {
-                        Text = msg.Text,
-                        Recipient = new ChannelAccount(
-                                                id: EndUser["Id"],
-                                                name: EndUser["Name"]),
-                        From = msg.Recipient,
-                        Type = ActivityTypes.Message
-                        }
-                    );
-                    context.Wait(MessageReceived);
-                }
-                else
-                {
-                    await base.MessageReceived(context, item);
-                }
-            }
+            Logger.Info("OCSBot::IsHumanInvestigating is false");
+            await base.MessageReceived(context, item);
+
+
+            return;
+            //if (!IsHumanInvestigating)
+            //{
+            //    Logger.Info("OCSBot::IsHumanInvestigating is false");
+            //    await base.MessageReceived(context, item);
+            //}
+            //else
+            //{
+            //    var msg = (Activity)context.Activity;
+
+            //    Logger.Info("OCSBot::IsHumanInvestigating is true");
+            //    Logger.Info("msg.From.Id != EndUser[Id]" + (msg.From.Id != EndUser["Id"]).ToString());
+            //    if (msg.Text == "#close#")
+            //    {
+            //        //agent close case
+            //        SetHumanInvestigating(false, null, null);
+            //        context.Done("");
+            //    }
+            //    else if(msg.From.Id != EndUser["Id"])
+            //    {
+            //        //agent reply
+            //        var reply = msg.CreateReply(msg.Text);
+            //        await context.PostAsync(new Activity
+            //        {
+            //            Text = msg.Text,
+            //            Recipient = new ChannelAccount(
+            //                                    id: EndUser["Id"],
+            //                                    name: EndUser["Name"]),
+            //            From = msg.Recipient,
+            //            Type = ActivityTypes.Message
+            //            }
+            //        );
+            //        context.Wait(MessageReceived);
+            //    }
+            //    else
+            //    {
+            //        await base.MessageReceived(context, item);
+            //    }
+            //}
         }
         [LuisIntent("None")]
         public async Task None(IDialogContext context, LuisResult result)
@@ -84,7 +90,8 @@ namespace OCSBot.Dialogs
                 answer = Messages.BOT_CREATE_TICKET;
                 await context.PostAsync(answer);
                 Logger.Info($"{context.Activity.From.Name}/{context.Activity.Recipient.Name}");
-                IsHumanInvestigating = await HumanProcess(context, result);
+                //IsHumanInvestigating = await HumanProcess(context, result);
+                await HumanProcess(context, result);
             }
         }
     }

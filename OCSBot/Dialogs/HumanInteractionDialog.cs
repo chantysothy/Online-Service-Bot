@@ -36,10 +36,10 @@ namespace OCSBot.Dialogs
         public async Task HumanInteraction(IDialogContext context, IAwaitable<Microsoft.Bot.Connector.IMessageActivity> item)
         {
             var humanInvestigated = await HumanProcess(context);
-            if (!humanInvestigated)
-            {
-                context.Done("很抱歉目前客服人員都在忙線中，我們已經為您建立了一個Ticket。");
-            }
+            //if (!humanInvestigated)
+            //{
+            //    context.Done("很抱歉目前客服人員都在忙線中，我們已經為您建立了一個Ticket。");
+            //}
             //TODO:remove below
             context.Done("temoeratory end dialog...");
         }
