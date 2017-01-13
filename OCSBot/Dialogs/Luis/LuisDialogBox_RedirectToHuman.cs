@@ -108,7 +108,7 @@ namespace OCSBot.Dialogs
                     Text = activityFromUser.Text,
                     From = new Microsoft.Bot.Connector.DirectLine.ChannelAccount
                     {
-                        Id = agent.Id,/*activityFromUser.From.Id,*/
+                        Id = activityFromUser.From.Id,/*activityFromUser.From.Id,*/
                         Name = $"{activityFromUser.From.Name}@ocsuser"
                     },
                     Recipient = activityFromUser.Recipient,
@@ -116,7 +116,9 @@ namespace OCSBot.Dialogs
                     ChannelData = new DirectLineChannelData
                     {
                         RoundTrip = 0,
-                        ConversationId = _agentConversationId
+                        ConversationId = _agentConversationId,
+                        UserID = activityFromUser.From.Id,
+                        UserName = activityFromUser.From.Name
                     }
                 };
 

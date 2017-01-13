@@ -11,5 +11,8 @@ namespace OCSBot.Shared.Models
     {
         public int RoundTrip { get; set; }
         public string ConversationId { get; set; }
+        public string UserID { get; set; }
+        public string UserName { get; set; }
+        public string DirectLineBotID { get; set; }
     }
 }

@@ -117,7 +117,8 @@ namespace AgentLoginWeb.Controllers
                 LocalActivity = resumption,
                 LocalChannelID = activity.ChannelId,
                 LocalConversationID = activity.Conversation.Id,
-                LocalBotId = activity.Recipient.Id
+                LocalBotId = activity.Recipient.Id,
+                LocalUserName = activity.From.Name
             });
             await storage.UpdateConversationStatusAsync(new OCSBot.Shared.Models.ConversationStatus
             {

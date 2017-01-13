@@ -19,6 +19,7 @@ namespace OCSBot.Shared.Models
             {
                 _AgentId = value;
                 PartitionKey = value;
+                RowKey = value;
             }
         }
         public string ConversationId
@@ -30,8 +31,7 @@ namespace OCSBot.Shared.Models
             set
             {
                 _ConversationId = value;
-                RowKey = _ConversationId;
-
+                //RowKey = _ConversationId;
             }
         }
         public DateTime? ConversationStartUTCTime { get; set; } = new DateTime(1970,1,1);

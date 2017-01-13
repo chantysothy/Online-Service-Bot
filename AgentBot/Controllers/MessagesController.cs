@@ -31,8 +31,7 @@ namespace AgentBot
             {
                 if (activity.Type == ActivityTypes.Message)
                 {
-                    Logger.Info($"message received from {activity.From.Name} : {JsonConvert.SerializeObject(activity)}");
-                    Logger.Info($"message received to {activity.Recipient.Name}/{activity.Recipient.Id}");
+                    Logger.Info($"OCSBot::message received : {JsonConvert.SerializeObject(activity)}");
                     await Conversation.SendAsync(activity, () => new Dialogs.AgentDialog());
                 }
                 else

@@ -61,7 +61,7 @@ namespace OCSBot.Shared.Models
         { get; set; }
 
         public DateTime? ConversationStartUTCTime { get; set; } = new DateTime(1970, 1, 1);
-
+        public string LocalUserName { get; set; }
         public string LocalChannelID { get; set; }
         public string RemoteChannelID { get; set; }
         public string RemoteConversationID { get; set; }

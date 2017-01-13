@@ -18,10 +18,10 @@ namespace AgentBot.Dialogs
     
     public partial class AgentDialog 
     {
-        public async Task DispatchAsync(IDialogContext context, IAwaitable<IMessageActivity> item)
+        public async Task DispatchAsync(IDialogContext context, IAwaitable<Microsoft.Bot.Connector.IMessageActivity> item)
         {
-            Activity activity = (Activity)await item;
-            Logger.Info($"message received from {activity.From.Name} : {JsonConvert.SerializeObject(activity)}");
+            Microsoft.Bot.Connector.Activity activity = (Microsoft.Bot.Connector.Activity)await item;
+            Logger.Info($"message received from {activity.From.Name}/{activity.From.Id} : {JsonConvert.SerializeObject(activity)}");
             Logger.Info($"message received to {activity.Recipient.Name}/{activity.Recipient.Id}");
 
             var storage = new AgentStatusStorage(
@@ -48,7 +48,9 @@ namespace AgentBot.Dialogs
                 convRecord.RemoteConversationID = channelData.ConversationId;
                 convRecord.RemoteBotId = activity.From.Id;//remote user id actually...
                 convRecord.RemoteActivity = UrlToken.Encode<ResumptionCookie>(
-                                                new ResumptionCookie((Activity)activity));
+                                                new ResumptionCookie((Microsoft.Bot.Connector.Activity)activity));
+                convRecord.RemoteUserId = channelData.UserID;
+                convRecord.RemoteUserName = channelData.UserName;
                 await storage.UpdateConversationActivityAsync(convRecord);
 
                 Logger.Info($"agent:{agent}");

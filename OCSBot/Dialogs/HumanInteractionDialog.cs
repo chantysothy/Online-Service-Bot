@@ -31,7 +31,8 @@ namespace OCSBot.Dialogs
         public async Task StartAsync(IDialogContext context)
         {
             Logger.Info("In HumandDialog");
-            context.Wait(HumanInteraction);   
+            context.Wait(HumanInteraction);
+            //await HumanInteraction(context, (Microsoft.Bot.Builder.Dialogs.IAwaitable<Microsoft.Bot.Connector.IMessageActivity>)new AwaitableFromItem<Microsoft.Bot.Connector.IMessageActivity>((Microsoft.Bot.Connector.IMessageActivity)context.Activity));
         }
         public async Task HumanInteraction(IDialogContext context, IAwaitable<Microsoft.Bot.Connector.IMessageActivity> item)
         {
@@ -65,6 +66,7 @@ namespace OCSBot.Dialogs
                     localConversation = new ConversationRecord();
                 }
                 localConversation.UserID = context.Activity.From.Id;
+                localConversation.LocalUserName = context.Activity.From.Name;
                 localConversation.LocalBotId = context.Activity.Recipient.Id;
                 localConversation.LocalChannelID = context.Activity.ChannelId;
                 localConversation.LocalConversationID = context.Activity.Conversation.Id;
@@ -74,7 +76,8 @@ namespace OCSBot.Dialogs
                 {
                     Type = Microsoft.Bot.Connector.DirectLine.ActivityTypes.Message,
                     From = new Microsoft.Bot.Connector.DirectLine.ChannelAccount(
-                                                id: agentConversation.LocalBotId,
+                                                /*id: agentConversation.LocalBotId,*/
+                                                id: context.Activity.From.Id,
                                                 name: context.Activity.From.Name
                                             ),
                     Recipient = new Microsoft.Bot.Connector.DirectLine.ChannelAccount(
@@ -138,15 +141,15 @@ namespace OCSBot.Dialogs
                         ConversationId = _agentConversationId,
                     };
                 }
-                Logger.Info($"activityFromUser - From.Name:{activityFromUser.From.Name} - Recipient.Name:{activityFromUser.Recipient.Name}");
-                Logger.Info($"activityFromUser - From.Name:{activityFromUser.From.Name} - Recipient.Name:{activityFromUser.Recipient.Name}");
+                Logger.Info($"activityFromUser - From.Name:{activityFromUser.From.Name} - From.Id:{activityFromUser.From.Id}");
+                Logger.Info($"activityFromUser - Recipient.Name:{activityFromUser.Recipient.Name} - Recipient.Id:{activityFromUser.Recipient.Name}");
                 var toAgent = new Microsoft.Bot.Connector.DirectLine.Activity
                 {
                     Type = Microsoft.Bot.Connector.DirectLine.ActivityTypes.Message,
                     Text = activityFromUser.Text,
                     From = new Microsoft.Bot.Connector.DirectLine.ChannelAccount
                     {
-                        Id = agent.Id,/*activityFromUser.From.Id,*/
+                        Id = activityFromUser.From.Id,/*activityFromUser.From.Id,*/
                         Name = $"{activityFromUser.From.Name}@ocsuser"
                     },
                     Recipient = activityFromUser.Recipient,
@@ -154,7 +157,9 @@ namespace OCSBot.Dialogs
                     ChannelData = new DirectLineChannelData
                     {
                         RoundTrip = 0,
-                        ConversationId = _agentConversationId
+                        ConversationId = _agentConversationId,
+                        UserID = activityFromUser.From.Id,
+                        UserName = activityFromUser.From.Name
                     }
                 };
 
@@ -162,12 +167,7 @@ namespace OCSBot.Dialogs
                                                     conversation.ConversationId,
                                                     toAgent);
 
-                //await agentStorage.UpdateConversationActivityAsync(new ConversationRecord
-                //{
-                //    UserID = 
-                //});
-
-                Logger.Info($"OCSBot::PostToAgent() - {JsonConvert.SerializeObject(toAgent)}");
+                Logger.Info($"OCSBot::Dialog:PostToAgent() - {JsonConvert.SerializeObject(toAgent)}");
                 convStatus = (await agentStorage.QueryConversationStatusAsync(agent.Id)).OrderByDescending(o => o.Timestamp).FirstOrDefault();
                 convStatus.OCSDirectlineConversationId = conversation.ConversationId;
                 convStatus.OCSEndUserId = activityFromUser.From.Id;

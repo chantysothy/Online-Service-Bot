@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Microsoft.Bot.Builder.Dialogs;
 using OCSBot.KB;
 using OCSBot.Dialogs;
+using OCSBot.Shared;
 
 namespace OCSBot
 {
@@ -38,7 +39,15 @@ namespace OCSBot
                 //else
                 try 
                 {
-                    await Conversation.SendAsync(activity, () => new LuisDialogBox());
+                    Logger.Info($"message received:{JsonConvert.SerializeObject(activity)}");
+                    if (activity.From.Name.ToLower().EndsWith("@agent"))
+                    {
+
+                    }
+                    else
+                    {
+                        await Conversation.SendAsync(activity, () => new LuisDialogBox());
+                    }
                 }
                 catch (Exception exp)
                 {
