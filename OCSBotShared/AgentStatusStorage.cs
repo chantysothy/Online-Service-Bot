@@ -16,11 +16,12 @@ namespace OCSBot.Shared
         private readonly string TABLENAME_AGENT_CONVERSATION_STATUS = "agentconversationstatus";
         private readonly string CONTAINERNAME_AGNET_LEASE_LOCK = "agentlease";
         private CloudStorageAccount StorageAccount = null;
-        
+        private ConversationManager ConvManager = null;
         public AgentStatusStorage(string connectString)
         {
             ConnectionString = connectString;
             StorageAccount = CloudStorageAccount.Parse(ConnectionString);
+            ConvManager = new ConversationManager(connectString);
         }
         public async Task<AgentStatus> QueryAgentStatusAsync(string agentId)
         {
@@ -214,15 +215,7 @@ namespace OCSBot.Shared
                     var query = from agent in tableRef.CreateQuery<AgentStatus>()
                                 where agent.IsLoggedIn && !agent.IsOccupied
                                 select agent;
-                    //var query = new TableQuery<AgentStatus>().Where(
-                    //    TableQuery.CombineFilters(
-                    //          TableQuery.GenerateFilterCondition("IsOccupied", QueryComparisons.Equal, "False"),
-                    //          TableOperators.And,
-                    //          TableQuery.GenerateFilterCondition("IsLoggedIn", QueryComparisons.Equal, "True")
-                    //          )
-                    //        );
-                    //var results = tableRef.ExecuteQuery<AgentStatus>(query).ToArray();
-
+  
                     return query.ToArray();
                 }
                 catch (Exception exp)
@@ -285,6 +278,18 @@ namespace OCSBot.Shared
             finally
             {
             }
+        }
+        public async Task<bool> UpdateConversationActivityAsync(ConversationRecord record)
+        {
+            return await ConvManager.UpdateConversationActivityAsync(record);
+        }
+        public async Task<ConversationRecord[]> FindConversationActivityAsync(Func<ConversationRecord, bool> func)
+        {
+            return await ConvManager.FindConversationActivityAsync(func);
+        }
+        public async Task<ConversationRecord[]> FindMyConversationActivityAsync(string myLocalUserID)
+        {
+            return await ConvManager.FindMyConversationActivityAsync(myLocalUserID);
         }
     }
 }

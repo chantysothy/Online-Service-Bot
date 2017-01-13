@@ -23,7 +23,7 @@ namespace AgentBot.Dialogs
         }
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> item)
         {
-            Logger.Info("message received async");
+            Logger.Info("MessageReceivedAsync() called");
             var activity = await item;
             bool authenticated = false;
 
@@ -39,6 +39,7 @@ namespace AgentBot.Dialogs
             {
 
             }
+            //Do we really need this check ?
             if (activity.From.Name.EndsWith("@ocsuser"))
             {
                 //message from user, send to agent
@@ -47,15 +48,16 @@ namespace AgentBot.Dialogs
             }
             else
             {
+                var agentText = activity.Text.ToLower().Trim();
                 //message from agent
-                if (activity.Text.ToLower().Trim() == "login")
+                if (agentText == "login")
                 {
                     RequestLogin((Activity)activity);
                     resumptionCookie = new ResumptionCookie(activity);
 
                     Logger.Info($"ResumptionCookie set!");
                 }
-                else if (activity.Text.ToLower().Trim() == "logout")
+                else if (agentText == "logout")
                 {
                     authenticated = false;
                     userData.SetProperty<bool>("Agent:Authenticated", false);
@@ -66,6 +68,30 @@ namespace AgentBot.Dialogs
 
                     var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
                     await connector.Conversations.ReplyToActivityAsync(((Activity)activity).CreateReply("you've logged out"));
+                }
+                else if (agentText.StartsWith("reply:"))
+                {
+                    //this is messages replies to user
+                    Logger.Info($"Agent [{activity.From.Id}] is replying");
+                    var storage = new AgentStatusStorage(ConfigurationHelper.GetString("BotStatusDBConnectionString"));
+                    var agent = await storage.QueryAgentStatusAsync(activity.From.Id);
+
+                    var convRecord = (await storage.FindMyConversationActivityAsync(agent.Id)).FirstOrDefault();
+                    var remoteCookie = UrlToken.Decode<ResumptionCookie>(convRecord.RemoteActivity);
+                    var remoteActivity = remoteCookie.GetMessage();
+                    var remoteConnector = new ConnectorClient(
+                                                baseUri:new Uri(remoteActivity.ServiceUrl),
+                                                credentials:new MicrosoftAppCredentials(
+                                                                appId:ConfigurationHelper.GetString("MicrosoftAppId"),
+                                                                password:ConfigurationHelper.GetString("MicrosoftAppPassword")
+                                                            ),
+                                                addJwtTokenRefresher:true
+                                                );
+                    Logger.Info("remoteConnector created");
+                    var reply = remoteActivity.CreateReply(activity.Text.Replace("reply:", ""));
+                    Logger.Info($"reply created:{reply}");
+                    remoteConnector.Conversations.ReplyToActivity(reply);
+                    Logger.Info($"replied");
                 }
                 else if (!authenticated)
                 {

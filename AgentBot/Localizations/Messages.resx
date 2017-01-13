@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BOT_CASE_CLOSED" xml:space="preserve">
+    <value>目前沒有任何與客戶的直接對話</value>
+  </data>
   <data name="BOT_LOGIN_CARD_TITLE" xml:space="preserve">
     <value>請登入工作站</value>
   </data>

@@ -20,7 +20,6 @@ namespace AgentBot.Dialogs
     {
         public async Task DispatchAsync(IDialogContext context, IAwaitable<IMessageActivity> item)
         {
-            Logger.Info("dispatch()");
             Activity activity = (Activity)await item;
             Logger.Info($"message received from {activity.From.Name} : {JsonConvert.SerializeObject(activity)}");
             Logger.Info($"message received to {activity.Recipient.Name}/{activity.Recipient.Id}");
@@ -30,36 +29,30 @@ namespace AgentBot.Dialogs
 
             if (activity.From.Name.EndsWith("@ocsuser"))
             {
+                //Messages from OCS User, when message from OCS User sent to this method, it has to be coming from DirectLine
                 AgentStatus agent = null;
+                //retrieve ChannelData which includes channelId for our conversation
+                //TODO:figure out a way that simplier
                 JObject o = (JObject)activity.ChannelData;
                 var os = JsonConvert.SerializeObject(o);
                 DirectLineChannelData channelData = JsonConvert.DeserializeObject<DirectLineChannelData>(os);
-                //dynamic channelData = activity.ChannelData;
+
                 Logger.Info($"ChannelData = {channelData}");
-                ConversationStatus conversation = null;
-                if (channelData.RoundTrip == 0)
-                {
-                    Logger.Info($"RoundTrip = {channelData.RoundTrip}");
-                    //first message send to agent, find an available agent
-                    agent = (await storage.FindAvailableAgentsAsync()).FirstOrDefault();
-                    conversation = (await storage.QueryConversationStatusAsync(c => c.AgentID == agent.Id)).FirstOrDefault();
-                    Logger.Info($"conversation = {conversation}");
+                //ConversationStatus conversation = null;
+                Logger.Info($"RoundTrip = {channelData.RoundTrip}");
+                //first message send to agent, find an available agent
+                //TODO:the agent has been selected in OCS Bot, need to make it sync
+                //      Instead of selecting another one here...
+                agent = (await storage.FindAvailableAgentsAsync()).FirstOrDefault();
+                var convRecord = (await storage.FindConversationActivityAsync(a => a.UserID == agent.Id)).FirstOrDefault();
+                convRecord.RemoteConversationID = channelData.ConversationId;
+                convRecord.RemoteBotId = activity.From.Id;//remote directline bot Id
+                convRecord.RemoteActivity = UrlToken.Encode<ResumptionCookie>(
+                                                new ResumptionCookie((Activity)context.Activity));
+                await storage.UpdateConversationActivityAsync(convRecord);
 
-                    conversation.OCSDirectlineConversationId = channelData.ConversationId;
-                }
-                else
-                {
-                    //continous messages, find previous agent
-                    var previousConversation = (await storage.QueryConversationStatusAsync(c => c.OCSDirectlineConversationId == channelData.ConversationId)).SingleOrDefault();
-                    Logger.Info($"previousConversation = {previousConversation}");
-
-                    agent = (await storage.FindAvailableAgentsAsync(a => previousConversation.AgentID == a.AgentIdInChannel)).SingleOrDefault();
-                    Logger.Info($"agent = {agent}");
-
-                    conversation.OCSDirectlineConversationId = channelData.ConversationId;
-                }
                 Logger.Info($"agent:{agent}");
-                if (!agent.IsLoggedIn || agent.IsOccupied)
+                if (!agent.IsLoggedIn)
                 {
                     //Agent somehow is occupied (logout?)
                     Logger.Info("Agent is occupied");
@@ -71,42 +64,31 @@ namespace AgentBot.Dialogs
                 {
                     //Agnet is available to answer questions, send message to agent
                     Logger.Info("Sending to conversation...");
-                    if (channelData.RoundTrip == 0)
-                    {
-                        //first message sent to agent
-                        conversation = (await storage.QueryConversationStatusAsync(agent.Id))
-                                                    .Where(c => c.OCSDirectlineConversationId == channelData.ConversationId)
-                                                    .SingleOrDefault();
 
-                    }
+                    //TODO:Need to check if current agent is this user
+                    //agent.IsOccupied = true;
+                    //await storage.UpdateAgentStatusAsync(agent);
+
                     //First retrieve last conversaion if exists
-                    resumptionCookie = UrlToken.Decode<ResumptionCookie>(conversation.AgentResumptionCookie);
-                    Logger.Info($"AgentBot::Sending to agent...resumptionCookie={resumptionCookie}");
-                    var originalActivity = resumptionCookie.GetMessage();
-                    var reply = originalActivity.CreateReply(activity.Text);
-
-
-                    Logger.Info($"AgentBot::Sending:{JsonConvert.SerializeObject(reply)}");
-                    //await context.PostAsync(reply);
-                    //Logger.Info($"AgentBot::Sending to agent...done");
-                    var connector = new ConnectorClient(new Uri(agent.ServiceURL),
+                    //resumptionCookie = UrlToken.Decode<ResumptionCookie>(conversation.AgentResumptionCookie);
+                    var localResumptionCookie = UrlToken.Decode<ResumptionCookie>(convRecord.LocalActivity);
+                    Logger.Info($"AgentBot::LocalResumptionCookie:{localResumptionCookie}");
+                    var localActivity = localResumptionCookie.GetMessage();
+                    var localReply = localActivity.CreateReply($"[{activity.From.Name}]{activity.Text}");
+                    var localConnector = new ConnectorClient(new Uri(localActivity.ServiceUrl),
                                 new MicrosoftAppCredentials(
                                     ConfigurationHelper.GetString("MicrosoftAppId"),
                                     ConfigurationHelper.GetString("MicrosoftAppPassword")),
                                 true);
-                    
-                    Microsoft.Bot.Connector.Conversations convs = new Microsoft.Bot.Connector.Conversations(connector);
-                    convs.ReplyToActivity(reply);
+                    Microsoft.Bot.Connector.Conversations localConversation = new Microsoft.Bot.Connector.Conversations(localConnector);
+                    localConversation.ReplyToActivity(localReply);
+                    Logger.Info("done");
+                    return;
 
-
-                    var resp = connector
-                                    .Conversations
-                                    .SendToConversation(reply, originalActivity.Conversation.Id);
                 }
             }
             else
             {
-                Logger.Info($"ResumptionCookie set!");
                 resumptionCookie = new ResumptionCookie(await item);
                 await MessageReceivedAsync(context, item);
             }

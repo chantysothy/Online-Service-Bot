@@ -83,7 +83,7 @@ namespace OCSBot.Dialogs
                 //TODO: redirect to human
                 answer = Messages.BOT_CREATE_TICKET;
                 await context.PostAsync(answer);
-
+                Logger.Info($"{context.Activity.From.Name}/{context.Activity.Recipient.Name}");
                 IsHumanInvestigating = await HumanProcess(context, result);
             }
         }

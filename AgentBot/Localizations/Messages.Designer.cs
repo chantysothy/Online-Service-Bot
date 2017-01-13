@@ -61,6 +61,15 @@ namespace AgentBot.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 目前沒有任何與客戶的直接對話.
+        /// </summary>
+        internal static string BOT_CASE_CLOSED {
+            get {
+                return ResourceManager.GetString("BOT_CASE_CLOSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 請登入工作站.
         /// </summary>
         internal static string BOT_LOGIN_CARD_TITLE {

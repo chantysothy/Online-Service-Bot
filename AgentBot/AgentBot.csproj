@@ -152,6 +152,7 @@
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Dialogs\AgentDialog_Dispatch.cs" />
     <Compile Include="Dialogs\AgentDialog.cs" />
+    <Compile Include="Dialogs\AgentReplyModeDialog.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

@@ -111,7 +111,14 @@ namespace AgentLoginWeb.Controllers
             //Activity replyActivity = activity.CreateReply("You've been succesfully authenticated!");
             OCSBot.Shared.AgentStatusStorage storage = new OCSBot.Shared.AgentStatusStorage(
                 Configuration.ConfigurationHelper.GetString("BotStatusDBConnectionString"));
-
+            await storage.UpdateConversationActivityAsync(new OCSBot.Shared.Models.ConversationRecord
+            {
+                UserID = userId,
+                LocalActivity = resumption,
+                LocalChannelID = activity.ChannelId,
+                LocalConversationID = activity.Conversation.Id,
+                LocalBotId = activity.Recipient.Id
+            });
             await storage.UpdateConversationStatusAsync(new OCSBot.Shared.Models.ConversationStatus
             {
                 AgentID = userId,
