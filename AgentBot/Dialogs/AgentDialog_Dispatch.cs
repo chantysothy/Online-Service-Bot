@@ -82,6 +82,7 @@ namespace AgentBot.Dialogs
                                                                     ConfigurationHelper.GetString("MicrosoftAppId"),
                                                                     ConfigurationHelper.GetString("MicrosoftAppPassword")),
                                                                 true);
+                    
                     Microsoft.Bot.Connector.Conversations localConversation = new Microsoft.Bot.Connector.Conversations(localConnector);
                     localConversation.ReplyToActivity(localReply);
                     Logger.Info("done");

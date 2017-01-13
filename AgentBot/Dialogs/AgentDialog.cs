@@ -24,12 +24,19 @@ namespace AgentBot.Dialogs
             Logger.Info($"Agent [{activity.From.Id}] is replying");
             var storage = new AgentStatusStorage(ConfigurationHelper.GetString("BotStatusDBConnectionString"));
             AgentStatus agent = await storage.QueryAgentStatusAsync(activity.From.Id);
-            //DirectLineClient dc = new DirectLineClient()
+            ConversationRecord conv = (await storage.FindMyConversationActivityAsync(agent.Id)).FirstOrDefault();
+
             var uri = new Uri("https://directline.botframework.com");
             Logger.Info($"PostToOCSUser::{agent.Id}/{agent.Name}");
             DirectLineClientCredentials creds = new DirectLineClientCredentials(ConfigurationHelper.GetString("OCSBot_DirectLine_Secret")); //lot into the bot framework
             Microsoft.Bot.Connector.DirectLine.DirectLineClient client = new Microsoft.Bot.Connector.DirectLine.DirectLineClient(uri, creds); //connect the client
             var conversation = client.Conversations.StartConversation();
+            DirectLineChannelData data = new DirectLineChannelData()
+            {
+                UserID = conv.RemoteUserId,
+                UserName = conv.RemoteUserName,
+                DirectLineBotID = conv.RemoteBotId
+            };
             client.Conversations.PostActivity(conversation.ConversationId,
                                                 new Microsoft.Bot.Connector.DirectLine.Activity
                                                 {
@@ -39,7 +46,8 @@ namespace AgentBot.Dialogs
                                                         Name = $"{agent.Name}@agent"
                                                     },
                                                     Type = Microsoft.Bot.Connector.ActivityTypes.Message,
-                                                    Text = activity.Text
+                                                    Text = activity.Text,
+                                                    ChannelData = data
                                                 });
 
             //var remoteConnector = new ConnectorClient(
@@ -70,7 +78,7 @@ namespace AgentBot.Dialogs
             try
             {
                 authenticated = userData.GetProperty<bool>("Agent:Authenticated");
-                await context.PostAsync($"authenticated={authenticated}");
+                //await context.PostAsync($"authenticated={authenticated}");
             }
             catch
             {
@@ -122,7 +130,7 @@ namespace AgentBot.Dialogs
                 {
                     //send to OCS user
                     await context.PostAsync($"[logged in]{activity.Text}");
-                    await PostToOCSUser(context, (Microsoft.Bot.Connector.Activity)activity);
+                    //await PostToOCSUser(context, (Microsoft.Bot.Connector.Activity)activity);
                     context.Wait(DispatchAsync);
                     //context.Done("");
                 }

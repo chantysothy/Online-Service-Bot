@@ -42,6 +42,7 @@ namespace OCSBot
                     Logger.Info($"message received:{JsonConvert.SerializeObject(activity)}");
                     if (activity.From.Name.ToLower().EndsWith("@agent"))
                     {
+                        await Conversation.SendAsync(activity, () => new AgentReplyDialog());
 
                     }
                     else
