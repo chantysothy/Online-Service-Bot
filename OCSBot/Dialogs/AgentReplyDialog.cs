@@ -28,14 +28,16 @@ namespace OCSBot.Dialogs
 
             var resumptionCookie = UrlToken.Decode<ResumptionCookie>(localConversation.LocalActivity);
             var localActivity = resumptionCookie.GetMessage();
-            var reply = localActivity.CreateReply(((Activity)context.Activity).Text);
+            var message = ((Activity)context.Activity).Text.Replace("reply:", "");
+            message = $"[{incoming.From.Name}]{message}";
+            var reply = localActivity.CreateReply(message);
+
             Logger.Info($"reply={JsonConvert.SerializeObject(reply)}");
             var localConnector = new ConnectorClient(new Uri(localActivity.ServiceUrl),
                                                         new MicrosoftAppCredentials(
                                                             ConfigurationHelper.GetString("MicrosoftAppId"),
                                                             ConfigurationHelper.GetString("MicrosoftAppPassword")),
                                                         true);
-            Logger.Info("A");
             Microsoft.Bot.Connector.Conversations localConversations = new Microsoft.Bot.Connector.Conversations(localConnector);
             localConversations.ReplyToActivity(reply);
             Logger.Info("Done");
