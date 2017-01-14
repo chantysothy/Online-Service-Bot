@@ -78,7 +78,7 @@ namespace OCSBot.Dialogs
             var agentStorage = new AgentStatusStorage(agentStatusDB);
             var agent = await agentStorage.QueryAgentStatusAsync(activityFromUser.Recipient.Id);
             ConversationStatus convStatus = null;
-            var agentConversations = await agentStorage.QueryConversationStatusAsync(agent.Id);
+            //var agentConversations = await agentStorage.QueryConversationStatusAsync(agent.Id);
             
             try
             {
@@ -132,13 +132,13 @@ namespace OCSBot.Dialogs
                 //});
 
                 Logger.Info($"OCSBot::PostToAgent() - {JsonConvert.SerializeObject(toAgent)}");
-                convStatus = (await agentStorage.QueryConversationStatusAsync(agent.Id)).OrderByDescending(o => o.Timestamp).FirstOrDefault();
-                convStatus.OCSDirectlineConversationId = conversation.ConversationId;
-                convStatus.OCSEndUserId = activityFromUser.From.Id;
-                convStatus.OCSEndUserName = activityFromUser.From.Name;
-                convStatus.OCSBotName = activityFromUser.Recipient.Name;
-                convStatus.OCSBotId = activityFromUser.Recipient.Id;
-                await agentStorage.UpdateConversationStatusAsync(convStatus);
+                //convStatus = (await agentStorage.QueryConversationStatusAsync(agent.Id)).OrderByDescending(o => o.Timestamp).FirstOrDefault();
+                //convStatus.OCSDirectlineConversationId = conversation.ConversationId;
+                //convStatus.OCSEndUserId = activityFromUser.From.Id;
+                //convStatus.OCSEndUserName = activityFromUser.From.Name;
+                //convStatus.OCSBotName = activityFromUser.Recipient.Name;
+                //convStatus.OCSBotId = activityFromUser.Recipient.Id;
+                //await agentStorage.UpdateConversationStatusAsync(convStatus);
                 return null;
             }
             catch (Exception exp)

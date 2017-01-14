@@ -60,6 +60,7 @@ namespace OCSBot.Shared
             {
             }
         }
+        /*
         public async Task<ConversationStatus[]> QueryConversationStatusAsync(Func<ConversationStatus, bool> func)
         {
             var tableClient = StorageAccount.CreateCloudTableClient();
@@ -90,39 +91,12 @@ namespace OCSBot.Shared
             {
             }
         }
+        
         public async Task<ConversationStatus[]> QueryConversationStatusAsync(string agentId)
         {
             return await QueryConversationStatusAsync(x => x.AgentID == agentId);
-            var tableClient = StorageAccount.CreateCloudTableClient();
-            var tableRef = tableClient.GetTableReference(TABLENAME_AGENT_CONVERSATION_STATUS);
-            await tableRef.CreateIfNotExistsAsync();
-            try
-            {
-                try
-                {
-                    var query = from conversation in tableRef.CreateQuery<ConversationStatus>()
-                                where conversation.AgentID.CompareTo(agentId) == 0
-                                select conversation;
-
-                    return query.ToArray();
-                }
-                catch (Exception exp)
-                {
-                    throw exp;
-                }
-                finally
-                {
-
-                }
-            }
-            catch (Exception exp)
-            {
-                throw;
-            }
-            finally
-            {
-            }
         }
+        */
         public async Task<TableResult> UpdateAgentStatusAsync(AgentStatus obj)
         {
             var tableClient = StorageAccount.CreateCloudTableClient();

@@ -120,12 +120,12 @@ namespace AgentLoginWeb.Controllers
                 LocalBotId = activity.Recipient.Id,
                 LocalUserName = activity.From.Name
             });
-            await storage.UpdateConversationStatusAsync(new OCSBot.Shared.Models.ConversationStatus
-            {
-                AgentID = userId,
-                ConversationId = activity.Conversation.Id,
-                AgentResumptionCookie = resumption
-            });
+            //await storage.UpdateConversationStatusAsync(new OCSBot.Shared.Models.ConversationStatus
+            //{
+            //    AgentID = userId,
+            //    ConversationId = activity.Conversation.Id,
+            //    AgentResumptionCookie = resumption
+            //});
             await storage.UpdateAgentStatusAsync(new OCSBot.Shared.Models.AgentStatus()
             {
                 Id = userId,
