@@ -19,6 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OCSBotShared", "OCSBotShare
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{EF0FA443-1F1A-4EE7-A320-7A59A4A7327B}"
 	ProjectSection(SolutionItems) = preProject
+		doc\demo-script.docx = doc\demo-script.docx
 		doc\ocsbot.pptx = doc\ocsbot.pptx
 	EndProjectSection
 EndProject
