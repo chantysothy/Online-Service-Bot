@@ -1,0 +1,947 @@
+{
+  "luis_schema_version": "1.3.0",
+  "name": "PostDemo",
+  "desc": "",
+  "culture": "zh-cn",
+  "intents": [
+    {
+      "name": "AskQuestionHow"
+    },
+    {
+      "name": "ChangeBillingStatementAddress"
+    },
+    {
+      "name": "None"
+    },
+    {
+      "name": "PrintBillingStatement"
+    },
+    {
+      "name": "QueryMailingStatus"
+    },
+    {
+      "name": "SearchHouseByLocation"
+    }
+  ],
+  "entities": [
+    {
+      "name": "Address"
+    },
+    {
+      "name": "BillingStatementMonth"
+    },
+    {
+      "name": "HousePricing"
+    },
+    {
+      "name": "ItemType"
+    },
+    {
+      "name": "Landmark"
+    },
+    {
+      "name": "PackageNumber"
+    },
+    {
+      "name": "Subject"
+    }
+  ],
+  "composites": [
+    {
+      "name": "HouseTotalPrice",
+      "children": [
+        "number"
+      ]
+    },
+    {
+      "name": "HouseUnitPrice",
+      "children": [
+        "number"
+      ]
+    }
+  ],
+  "closedLists": [],
+  "bing_entities": [
+    "age",
+    "datetime",
+    "dimension",
+    "money",
+    "number",
+    "ordinal",
+    "percentage",
+    "temperature"
+  ],
+  "actions": [
+    {
+      "actionName": "AskQuestionHow",
+      "intentName": "AskQuestionHow",
+      "channel": null,
+      "actionParameters": [
+        {
+          "parameterName": "Subject",
+          "entityName": "Subject",
+          "required": false,
+          "question": "",
+          "phraseListFeatureName": null
+        }
+      ]
+    },
+    {
+      "actionName": "ChangeBillingStatementAddress",
+      "intentName": "ChangeBillingStatementAddress",
+      "channel": null,
+      "actionParameters": [
+        {
+          "parameterName": "Address",
+          "entityName": "Address",
+          "required": true,
+          "question": "請輸入新的地址：",
+          "phraseListFeatureName": null
+        }
+      ]
+    },
+    {
+      "actionName": "PrintBillingStatement",
+      "intentName": "PrintBillingStatement",
+      "channel": null,
+      "actionParameters": [
+        {
+          "parameterName": "BillingStatementMonth",
+          "entityName": "BillingStatementMonth",
+          "required": true,
+          "question": "請輸入帳單年月，例如2016/12：",
+          "phraseListFeatureName": null
+        }
+      ]
+    },
+    {
+      "actionName": "QueryMailingStatus",
+      "intentName": "QueryMailingStatus",
+      "channel": null,
+      "actionParameters": [
+        {
+          "parameterName": "ItemType",
+          "entityName": "ItemType",
+          "required": false,
+          "question": "",
+          "phraseListFeatureName": null
+        },
+        {
+          "parameterName": "PackageNumber",
+          "entityName": "PackageNumber",
+          "required": false,
+          "question": "",
+          "phraseListFeatureName": null
+        }
+      ]
+    }
+  ],
+  "model_features": [
+    {
+      "name": "Address",
+      "mode": true,
+      "words": "新莊,新莊區,台北,台北市,新北,新北市,大同區,大同",
+      "activated": true
+    },
+    {
+      "name": "Hows",
+      "mode": true,
+      "words": "怎麼,如何,怎樣,要怎麼,要如何,要怎樣,該怎麼,該如何,該怎樣",
+      "activated": true
+    },
+    {
+      "name": "Wants",
+      "mode": true,
+      "words": "我想要,想申請,我想申請,我希望,希望",
+      "activated": true
+    }
+  ],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "幫我翻譯新莊市思源路100巷50弄3號一樓",
+      "intent": "None",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 4,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "新莊市五工路一段2號的英文怎麼寫",
+      "intent": "None",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "把新莊市思源路100號翻譯成英文",
+      "intent": "None",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 1,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "翻譯台北市大同區華陰街九號",
+      "intent": "None",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 2,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "台北市信義區松仁路七號八樓的英文怎麼說",
+      "intent": "None",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 0,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "翻譯高雄市七賢路1號",
+      "intent": "None",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 2,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "幫我翻譯新北市新莊區思源路五九三巷",
+      "intent": "None",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 4,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "嗨,妳好",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "你好嗎？",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "查詢台北市1000萬以下3房電梯大樓",
+      "intent": "None",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 2,
+          "endPos": 4
+        },
+        {
+          "entity": "HouseTotalPrice",
+          "startPos": 5,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "我要賣台中市南區南和路的店面",
+      "intent": "None",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 3,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "更改帳單地址到新北市新莊區思源路100號",
+      "intent": "ChangeBillingStatementAddress",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 7,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "我的新帳單地址是台北市大同區華陰街100號",
+      "intent": "ChangeBillingStatementAddress",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 8,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "我要把帳單地址改成高雄市七賢路五段一百巷三十號",
+      "intent": "ChangeBillingStatementAddress",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 9,
+          "endPos": 22
+        }
+      ]
+    },
+    {
+      "text": "請把帳單寄到台北市信義區松仁路七號八樓",
+      "intent": "ChangeBillingStatementAddress",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 6,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "下次帳單要寄到台北市松山區中山北路900號",
+      "intent": "ChangeBillingStatementAddress",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 7,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "我的新地址是台北市松山區中山北路900號",
+      "intent": "ChangeBillingStatementAddress",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 6,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "請把帳單寄到我的新地址：新北市新莊區化成路101號八樓之一",
+      "intent": "ChangeBillingStatementAddress",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 12,
+          "endPos": 26
+        }
+      ]
+    },
+    {
+      "text": "把新的帳單寄到台中市大甲區奇美路100號",
+      "intent": "ChangeBillingStatementAddress",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 7,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "請把帳單地址改成新北市新莊區思源路100號",
+      "intent": "ChangeBillingStatementAddress",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 8,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "幫我印這個月的帳單",
+      "intent": "PrintBillingStatement",
+      "entities": []
+    },
+    {
+      "text": "我要補印上個月的帳單",
+      "intent": "PrintBillingStatement",
+      "entities": []
+    },
+    {
+      "text": "我要補印2016/10的帳單",
+      "intent": "PrintBillingStatement",
+      "entities": [
+        {
+          "entity": "BillingStatementMonth",
+          "startPos": 4,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "我要補印十月分帳單",
+      "intent": "PrintBillingStatement",
+      "entities": [
+        {
+          "entity": "BillingStatementMonth",
+          "startPos": 4,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "我要補印這個月的帳單",
+      "intent": "PrintBillingStatement",
+      "entities": []
+    },
+    {
+      "text": "請幫我補印2016/12的帳單",
+      "intent": "PrintBillingStatement",
+      "entities": [
+        {
+          "entity": "BillingStatementMonth",
+          "startPos": 5,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "幫我補印十二月的帳單",
+      "intent": "PrintBillingStatement",
+      "entities": []
+    },
+    {
+      "text": "列印2016/9帳單",
+      "intent": "PrintBillingStatement",
+      "entities": [
+        {
+          "entity": "BillingStatementMonth",
+          "startPos": 2,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "補印帳單",
+      "intent": "PrintBillingStatement",
+      "entities": []
+    },
+    {
+      "text": "你幫我列印本月帳單",
+      "intent": "PrintBillingStatement",
+      "entities": []
+    },
+    {
+      "text": "板橋市民大道附近有那些4樓的公寓",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Landmark",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "請問桃園市龍潭區有靠近市區的建地約一坪3萬的嗎",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "HouseUnitPrice",
+          "startPos": 17,
+          "endPos": 20
+        },
+        {
+          "entity": "Address",
+          "startPos": 2,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "買信義區5房8000多萬",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 1,
+          "endPos": 3
+        },
+        {
+          "entity": "HouseTotalPrice",
+          "startPos": 6,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "台北101附近有沒有2房1000萬以內的",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Landmark",
+          "startPos": 0,
+          "endPos": 2
+        },
+        {
+          "entity": "HouseTotalPrice",
+          "startPos": 10,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "新竹市電梯透天有500萬以下的嗎？謝謝",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 0,
+          "endPos": 2
+        },
+        {
+          "entity": "HouseTotalPrice",
+          "startPos": 8,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "找內湖3房1000萬以內",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 1,
+          "endPos": 2
+        },
+        {
+          "entity": "HouseTotalPrice",
+          "startPos": 5,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "本人想買大桃園的房子存款只有一百萬",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Landmark",
+          "startPos": 4,
+          "endPos": 6
+        },
+        {
+          "entity": "HouseTotalPrice",
+          "startPos": 14,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "岡山有房屋要賣嗎 預算500萬",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Landmark",
+          "startPos": 0,
+          "endPos": 1
+        },
+        {
+          "entity": "HouseTotalPrice",
+          "startPos": 10,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "請幫我找中山區套房預算700萬",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 4,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "我想租屋在南港 預算1500希望2房",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 5,
+          "endPos": 6
+        },
+        {
+          "entity": "HouseTotalPrice",
+          "startPos": 9,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "你們有內湖科學園區附近的700萬套房嗎?",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Landmark",
+          "startPos": 3,
+          "endPos": 8
+        },
+        {
+          "entity": "HouseTotalPrice",
+          "startPos": 12,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "西湖捷運站附近有1500萬以內的3房嗎",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Landmark",
+          "startPos": 0,
+          "endPos": 4
+        },
+        {
+          "entity": "HouseTotalPrice",
+          "startPos": 8,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "有新北市套房預算800萬",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 1,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "我要賣興隆路2段203巷8號1樓 1500萬",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 4,
+          "endPos": 13
+        },
+        {
+          "entity": "HouseTotalPrice",
+          "startPos": 14,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "八德區富城街購置一間屋齡5年左右的房子",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "我想買桃園縣八德附近一千萬左右的房子",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Landmark",
+          "startPos": 3,
+          "endPos": 7
+        },
+        {
+          "entity": "HouseTotalPrice",
+          "startPos": 10,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "我要找新北投的房子",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Landmark",
+          "startPos": 3,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "我想請你們幫我估價房子 地點在:新北是板橋區幸福路60巷63號1樓",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 15,
+          "endPos": 29
+        }
+      ]
+    },
+    {
+      "text": "請問北投有短租的住宅嗎??最好是石牌區",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 16,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "有沒有中國醫藥學院附近，室內30坪，平車，24小時管理的房子在賣",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Landmark",
+          "startPos": 3,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "我想找新莊的房子",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Landmark",
+          "startPos": 3,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "請問新莊思源路有500萬的房子嗎？",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 2,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "我想找台北市的房子",
+      "intent": "SearchHouseByLocation",
+      "entities": [
+        {
+          "entity": "Address",
+          "startPos": 3,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "我想要查我的包裹",
+      "intent": "QueryMailingStatus",
+      "entities": [
+        {
+          "entity": "ItemType",
+          "startPos": 6,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "我的包裹現在在哪裡",
+      "intent": "QueryMailingStatus",
+      "entities": [
+        {
+          "entity": "ItemType",
+          "startPos": 2,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "我要查包裹，編號是12345678",
+      "intent": "QueryMailingStatus",
+      "entities": [
+        {
+          "entity": "ItemType",
+          "startPos": 3,
+          "endPos": 4
+        },
+        {
+          "entity": "PackageNumber",
+          "startPos": 9,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "我收到掛號信催繳，號碼是A12345",
+      "intent": "QueryMailingStatus",
+      "entities": [
+        {
+          "entity": "ItemType",
+          "startPos": 3,
+          "endPos": 5
+        },
+        {
+          "entity": "PackageNumber",
+          "startPos": 12,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "我要查TK-12356包裹",
+      "intent": "QueryMailingStatus",
+      "entities": [
+        {
+          "entity": "ItemType",
+          "startPos": 6,
+          "endPos": 7
+        },
+        {
+          "entity": "PackageNumber",
+          "startPos": 3,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "我的包裹在哪裡",
+      "intent": "QueryMailingStatus",
+      "entities": [
+        {
+          "entity": "ItemType",
+          "startPos": 2,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "我收到掛號信催領通知",
+      "intent": "QueryMailingStatus",
+      "entities": [
+        {
+          "entity": "ItemType",
+          "startPos": 3,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "我要我的查掛號信在哪",
+      "intent": "QueryMailingStatus",
+      "entities": [
+        {
+          "entity": "ItemType",
+          "startPos": 5,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "我要查包裹狀態",
+      "intent": "QueryMailingStatus",
+      "entities": [
+        {
+          "entity": "ItemType",
+          "startPos": 3,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "我想查包裹",
+      "intent": "QueryMailingStatus",
+      "entities": [
+        {
+          "entity": "ItemType",
+          "startPos": 3,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "我想要申請e動郵局",
+      "intent": "AskQuestionHow",
+      "entities": [
+        {
+          "entity": "Subject",
+          "startPos": 5,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "怎麼申請e動郵局",
+      "intent": "AskQuestionHow",
+      "entities": [
+        {
+          "entity": "Subject",
+          "startPos": 4,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "怎麼在網路上寄包裹",
+      "intent": "AskQuestionHow",
+      "entities": []
+    },
+    {
+      "text": "未成年人如何申請網路帳號",
+      "intent": "AskQuestionHow",
+      "entities": [
+        {
+          "entity": "Subject",
+          "startPos": 8,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "去哪裡申請網路帳號",
+      "intent": "AskQuestionHow",
+      "entities": [
+        {
+          "entity": "Subject",
+          "startPos": 5,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "我要怎麼申請網路帳號",
+      "intent": "AskQuestionHow",
+      "entities": [
+        {
+          "entity": "Subject",
+          "startPos": 6,
+          "endPos": 9
+        }
+      ]
+    }
+  ]
+}

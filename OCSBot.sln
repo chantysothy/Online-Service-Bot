@@ -23,6 +23,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{EF0FA443-1
 		doc\ocsbot.pptx = doc\ocsbot.pptx
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LUIS", "LUIS", "{8AF6E3C6-A68D-42BF-A156-BF973004B467}"
+	ProjectSection(SolutionItems) = preProject
+		LUIS\LUISApp.json = LUIS\LUISApp.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
