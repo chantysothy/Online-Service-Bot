@@ -35,6 +35,9 @@ namespace OCSBot.Dialogs
         }
         public async Task<bool> HumanProcess(IDialogContext context, LuisResult result)
         {
+            Microsoft.Bot.Connector.Activity reply = ((Microsoft.Bot.Connector.Activity)context.Activity).CreateReply(" ");
+            reply.Type = Microsoft.Bot.Connector.ActivityTypes.Typing;
+            await context.PostAsync(reply);
             //Forward messages to HumanDialog so that every messages coming from end-user goes directly to Agent
             //And we don't have to do much about maintaining conversation states.
             await context.Forward(new HumanInteractionDialog(), ResumeAfterHumanProcess, result.Query, new System.Threading.CancellationToken());

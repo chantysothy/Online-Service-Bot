@@ -12,13 +12,14 @@ namespace OCSBot.KB
     {
         public static AzSearchResult SearchKB(string query)
         {
+            //&searchMode=any&searchFields=query,category,subcategory
             //GET https://ocsdemokb.search.windows.net/indexes/postkbindex/docs?api-version=2016-09-01&search=*
             //api - key: [admin key]
             //2015-02-28-Preview
             try
             {
                 query = HttpUtility.UrlEncode(query);
-                var SearchUrl = ConfigurationHelper.GetString("AzSearch_Url") + "&search=" + query + "&searchMode=any&searchFields=query";
+                var SearchUrl = ConfigurationHelper.GetString("AzSearch_Url") + "&search=" + query + "&searchMode=any&searchFields=query,category,subcategory";
                 var SearchAdminKey = ConfigurationHelper.GetString("AzSearch_AdminKey");
                 var http = new HttpHelper("application/json", SearchUrl);
 

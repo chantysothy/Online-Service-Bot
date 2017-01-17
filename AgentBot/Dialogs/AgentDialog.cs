@@ -95,7 +95,15 @@ namespace AgentBot.Dialogs
             {
                 var agentText = activity.Text.ToLower().Trim();
                 //message from agent
-                if (agentText == "login")
+                if (agentText == "help")
+                {
+
+                    var reply = ((Microsoft.Bot.Connector.Activity)activity).CreateReply($"{Messages.BOT_HELP}");
+                    reply.TextFormat = TextFormatTypes.Markdown;
+                    await context.PostAsync(reply);
+
+                }
+                else if (agentText == "login")
                 {
                     RequestLogin((Microsoft.Bot.Connector.Activity)activity);
                     resumptionCookie = new ResumptionCookie(activity);
@@ -110,9 +118,15 @@ namespace AgentBot.Dialogs
                     ((Microsoft.Bot.Connector.Activity)activity).GetStateClient()
                         .BotState
                         .SetUserData(activity.ChannelId, activity.From.Id, userData);
-
+                    var agentDB = (new AgentStatusStorage(ConfigurationHelper.GetString("BotStatusDBConnectionString")));
+                    var agent = await agentDB.QueryAgentStatusAsync(activity.From.Id);
+                    if (agent != null)
+                    {
+                        agent.IsLoggedIn = false;
+                        await agentDB.UpdateAgentStatusAsync(agent);
+                    }
                     var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                    await connector.Conversations.ReplyToActivityAsync(((Microsoft.Bot.Connector.Activity)activity).CreateReply("you've logged out"));
+                    await connector.Conversations.ReplyToActivityAsync(((Microsoft.Bot.Connector.Activity)activity).CreateReply(Messages.BOT_LOGGOUT));
                 }
                 else if (agentText.StartsWith("reply:"))
                 {

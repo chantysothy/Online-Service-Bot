@@ -70,6 +70,33 @@ namespace AgentBot.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 您好，請輸入help取得命令列表.
+        /// </summary>
+        internal static string BOT_GET_HELP {
+            get {
+                return ResourceManager.GetString("BOT_GET_HELP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 命令：&lt;br/&gt;&lt;br/&gt;登入：login&lt;br/&gt;&lt;br/&gt;登出：logout&lt;br/&gt;&lt;br/&gt;回覆：reply:{回答}.
+        /// </summary>
+        internal static string BOT_HELP {
+            get {
+                return ResourceManager.GetString("BOT_HELP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 您已經登出工作站!.
+        /// </summary>
+        internal static string BOT_LOGGOUT {
+            get {
+                return ResourceManager.GetString("BOT_LOGGOUT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 請登入工作站.
         /// </summary>
         internal static string BOT_LOGIN_CARD_TITLE {
@@ -84,6 +111,15 @@ namespace AgentBot.Localizations {
         internal static string BOT_PLEASE_LOGIN {
             get {
                 return ResourceManager.GetString("BOT_PLEASE_LOGIN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
     }

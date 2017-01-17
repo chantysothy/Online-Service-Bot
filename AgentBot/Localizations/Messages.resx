@@ -120,10 +120,22 @@
   <data name="BOT_CASE_CLOSED" xml:space="preserve">
     <value>目前沒有任何與客戶的直接對話</value>
   </data>
+  <data name="BOT_GET_HELP" xml:space="preserve">
+    <value>您好，請輸入help取得命令列表</value>
+  </data>
+  <data name="BOT_HELP" xml:space="preserve">
+    <value>命令：&lt;br/&gt;&lt;br/&gt;登入：login&lt;br/&gt;&lt;br/&gt;登出：logout&lt;br/&gt;&lt;br/&gt;回覆：reply:{回答}</value>
+  </data>
+  <data name="BOT_LOGGOUT" xml:space="preserve">
+    <value>您已經登出工作站!</value>
+  </data>
   <data name="BOT_LOGIN_CARD_TITLE" xml:space="preserve">
     <value>請登入工作站</value>
   </data>
   <data name="BOT_PLEASE_LOGIN" xml:space="preserve">
     <value>請登入</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
   </data>
 </root>

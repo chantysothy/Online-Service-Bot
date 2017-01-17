@@ -66,6 +66,9 @@ namespace AgentBot
                 var user = message.MembersAdded.FirstOrDefault();
                 if (user != null)
                 {
+                    ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
+                    var reply = message.CreateReply($"{Messages.BOT_GET_HELP}");
+                    connector.Conversations.ReplyToActivity(reply);
                 }
             }
             else if (message.Type == ActivityTypes.ContactRelationUpdate)

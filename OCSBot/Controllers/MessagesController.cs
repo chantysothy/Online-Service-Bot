@@ -25,18 +25,6 @@ namespace OCSBot
         {
             if (activity.Type == ActivityTypes.Message)
             {
-                //search for KB, then send to Luis
-                //var kbResult = KBSearch.Search(activity.Text);
-                //if (kbResult != null && kbResult.Count() > 0)
-                //{
-                //    var result = kbResult.First();
-                //    ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-
-                //    var reply = activity.CreateReply(result.content);
-                //    await connector.Conversations.ReplyToActivityAsync(reply);
-
-                //}
-                //else
                 try 
                 {
                     Logger.Info($"message received:{JsonConvert.SerializeObject(activity)}");

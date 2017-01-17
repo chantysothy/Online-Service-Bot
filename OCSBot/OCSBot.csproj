@@ -164,7 +164,7 @@
     <Compile Include="Dialogs\HumanInteractionDialog.cs" />
     <Compile Include="Dialogs\Luis\LuisDialogBox_RedirectToHuman.cs" />
     <Compile Include="Dialogs\Luis\LuisDialogBox_QueryMailingStatus.cs" />
-    <Compile Include="Dialogs\Luis\LuisDialogBox_None.cs" />
+    <Compile Include="Dialogs\Luis\LuisDialogBox_AskQuestionHow.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
