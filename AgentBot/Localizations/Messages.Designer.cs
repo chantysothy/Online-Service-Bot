@@ -115,11 +115,11 @@ namespace AgentBot.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to 請登入客服工作站.
         /// </summary>
-        internal static string String1 {
+        internal static string BOT_SIGNIN_BUTTON_TEXT {
             get {
-                return ResourceManager.GetString("String1", resourceCulture);
+                return ResourceManager.GetString("BOT_SIGNIN_BUTTON_TEXT", resourceCulture);
             }
         }
     }

@@ -70,7 +70,7 @@ namespace OCSBot.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 我幫你聯絡客服人員, 他們會連絡您喔~.
+        ///   Looks up a localized string similar to 請稍等....
         /// </summary>
         internal static string BOT_CREATE_TICKET {
             get {
@@ -88,7 +88,7 @@ namespace OCSBot.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 你問倒我了...我還沒學到這個....
+        ///   Looks up a localized string similar to 我的資料庫中沒有這個資料.
         /// </summary>
         internal static string BOT_NO_ANSWERS {
             get {

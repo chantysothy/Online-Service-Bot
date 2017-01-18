@@ -27,7 +27,9 @@ namespace OCSBot.Dialogs
         [LuisIntent("None")]
         public async Task None(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync($"None intent reached");
+            var answer = Messages.BOT_NO_ANSWERS;
+            await AskQuestionHow(context, result);
+
         }
         [LuisIntent("AskQuestionHow")]
         public async Task AskQuestionHow(IDialogContext context, LuisResult result)

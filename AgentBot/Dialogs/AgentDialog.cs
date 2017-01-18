@@ -168,16 +168,16 @@ namespace AgentBot.Dialogs
             {
                 Value = $"{ConfigurationHelper.GetString("AgentLogin_URL")}?cookie={encodedCookie}",
                 Type = "signin",
-                Title = $"Authentication Required"
+                Title = Messages.BOT_SIGNIN_BUTTON_TEXT,
+                Image = "https://michistorageea.blob.core.windows.net/cdn/login.png"
             };
             cardButtons.Add(button);
             Microsoft.Bot.Connector.SigninCard plCard = new Microsoft.Bot.Connector.SigninCard(
-                text: $"{Messages.BOT_PLEASE_LOGIN} - {message.From.Id}/{message.From.Name}/{message.Conversation.Id}",
+                text: $"{Messages.BOT_PLEASE_LOGIN}",
                 buttons: cardButtons);
             Microsoft.Bot.Connector.Attachment plAttachment = plCard.ToAttachment();
             reply.Attachments.Add(plAttachment);
             ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
-            //Conversation.ResumeAsync(resumptionCookie, reply).Wait();
             var response = connector.Conversations.SendToConversation(reply);
         }
 
