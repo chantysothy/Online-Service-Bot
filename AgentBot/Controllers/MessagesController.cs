@@ -31,8 +31,17 @@ namespace AgentBot
             {
                 if (activity.Type == ActivityTypes.Message)
                 {
-                    Logger.Info($"OCSBot::message received : {JsonConvert.SerializeObject(activity)}");
-                    await Conversation.SendAsync(activity, () => new Dialogs.AgentDialog());
+                    if (activity.Text == "$demo")
+                    {
+                        Logger.Info($"OCSBot::message received : {JsonConvert.SerializeObject(activity)}");
+                        await Conversation.SendAsync(activity, () => new Dialogs.DemoDialog());
+
+                    }
+                    else
+                    {
+                        Logger.Info($"OCSBot::message received : {JsonConvert.SerializeObject(activity)}");
+                        await Conversation.SendAsync(activity, () => new Dialogs.AgentDialog());
+                    }
                 }
                 else
                 {
